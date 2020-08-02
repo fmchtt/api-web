@@ -8,7 +8,7 @@ router.get('/', authService.authorize, controller.get);
 
 router.post('/', authService.authorize, controller.post);
 
-router.delete('/del/:id', controller.delete);
+router.delete('/del/:id', authService.authorize, controller.delete);
 
 
 module.exports = router;

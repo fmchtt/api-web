@@ -4,7 +4,7 @@ const Mogoose = require('mongoose');
 const Model = Mogoose.model('Product');
 
 exports.get = (req, res, next) => {
-    Model.find({}, 'title price description').then(data => {
+    Model.find({}, '').then(data => {
         res.status(200).send(data);
     }).catch(err => {
         res.status(400).send({ message: 'Erro ao cadastrar produto', data: err })
@@ -12,7 +12,13 @@ exports.get = (req, res, next) => {
 }
 
 exports.post = (req, res, next) => {
-    var product = Model(req.body);
+    var product = Model({
+        title: req.body.title,
+        description: req.body.description,
+        quantity: req.body.quantity,
+        price: req.body.price,
+        slug: req.body.title.toLowerCase().replace(' ', '-')
+    });
     product.save().then(x => {
         res.status(201).send("Produto Inserido!");
     }).catch(err => {
@@ -53,7 +59,7 @@ exports.put = (req, res, next) => {
 };
 
 exports.delete = (req, res, next) => {
-    Model.findOneAndDelete({ slug: req.params.slug }).then(x => {
+    Model.findOneAndDelete({ _id: req.params.id }).then(x => {
         res.status(201).send("Produto Deletado!");
     }).catch(err => {
         res.status(400).send({ message: 'Erro ao cadastrar produto', data: err })

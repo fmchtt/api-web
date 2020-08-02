@@ -5,7 +5,7 @@ const Model = Mogoose.model('Customer');
 const md5 = require('md5');
 
 exports.get = (req, res, next) => {
-    Model.find({}, 'name email').then(data => {
+    Model.find({}, 'name email roles').then(data => {
         res.status(200).send(data);
     }).catch(err => {
         res.status(400).send({ message: 'Erro ao encontrar customer', data: err })
@@ -20,8 +20,12 @@ exports.authenticate = (req, res, next) => {
             return
         }
 
-        auth.generateToken({_id: data._id, name: data.name, email: data.email}).then(token => {
-            res.status(201).send({token: token})
+        auth.generateToken({_id: data._id, name: data.name, email: data.email, roles: data.roles}).then(token => {
+            res.status(201).send({
+                token: token,
+                name: data.name,
+                roles: data.roles
+            })
         })
 
     }).catch(err => {
